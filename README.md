@@ -113,7 +113,7 @@ sqlite3 ishop4u.db ".tables"
 
 ## GitHub Pages
 
-This repository is published on GitHub Pages as documentation:  
+This repository is published on GitHub Pages as documentation:  https://github.com/chiznox6/ishop4u-backend.git
 
 
 ## Notes
