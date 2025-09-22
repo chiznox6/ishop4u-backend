@@ -1,53 +1,84 @@
-# iShop4U Backend – Database Schema
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>iShop4U Backend – Database Schema</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 2rem auto;
+      line-height: 1.6;
+      padding: 0 1rem;
+      color: #222;
+    }
+    h1, h2, h3 {
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 0.3rem;
+    }
+    pre {
+      background: #f6f6f6;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+    code {
+      background: #eee;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    .erd {
+      font-family: monospace;
+      background: #f9f9f9;
+      padding: 1rem;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>iShop4U Backend – Database Schema</h1>
 
-This project defines the database schema for the iShop4U system using Flask + SQLAlchemy.  
-It provides a unified shopping cart across multiple affiliate platforms (Amazon, AliExpress, etc.) while maintaining affiliate links for checkout.
+  <p>
+    This project defines the database schema for the <strong>iShop4U</strong> system using Flask + SQLAlchemy.
+    It provides a unified shopping cart across multiple affiliate platforms (Amazon, AliExpress, etc.)
+    while maintaining affiliate links for checkout.
+  </p>
 
----
+  <h2>Schema Overview</h2>
+  <h3>Tables</h3>
+  <ul>
+    <li><strong>users</strong> – Stores shopper accounts (name, email, password hash).</li>
+    <li><strong>affiliate_sources</strong> – Stores affiliate platforms (Amazon, AliExpress, etc.).</li>
+    <li><strong>products</strong> – Stores product data (name, price, image, affiliate link).</li>
+    <li><strong>cart_items</strong> – Connects users and products (with quantity & notes).</li>
+  </ul>
 
-## Schema Overview
+  <h2>Relationships</h2>
+  <ul>
+    <li><strong>User -&lt; CartItem &gt;- Product</strong> (many-to-many via <code>cart_items</code>).</li>
+    <li><strong>Product &gt;- AffiliateSource</strong> (one-to-many).</li>
+  </ul>
 
-### Tables
-- **users**
-  - Stores shopper accounts (name, email, password hash).
-- **affiliate_sources**
-  - Stores affiliate platforms (Amazon, AliExpress, etc.).
-- **products**
-  - Stores product data (name, price, image, affiliate link).
-- **cart_items**
-  - Connects users and products (with quantity & notes).
-
----
-
-## Relationships
-- **User -< CartItem >- Product** (many-to-many via `cart_items`).  
-- **Product >- AffiliateSource** (one-to-many).  
-
-Entity Relationship Diagram:
-
+  <div class="erd">
+<pre>
 users                       products                       affiliate_sources
   │                            │                                 │
   │ 1                          │ 1                               │ 1
   │                            │                                 │
   └──────< cart_items >────────┘                                 └───< products
          (quantity, notes)
+</pre>
+  </div>
 
+  <h3>How to read this:</h3>
+  <p>
+    A user can have many cart items.<br>
+    A product can appear in many users’ carts (many-to-many via cart_items).<br>
+    Each product belongs to one affiliate source (Amazon, AliExpress, etc.).
+  </p>
 
-
-## How to read this:
-
-A user can have many cart items.
-
-A product can appear in many users’ carts (many-to-many via cart_items).
-
-Each product belongs to one affiliate source (Amazon, AliExpress, etc.).
-
-
----
-
-## Example SQL Schema
-
-```sql
+  <h2>Example SQL Schema</h2>
+<pre><code class="sql">
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -80,46 +111,37 @@ CREATE TABLE cart_items (
     notes TEXT,
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (user_id, product_id)
-
 );
+</code></pre>
 
+  <h2>Running Locally</h2>
+  <ol>
+    <li>Clone the repository:
+      <pre><code>git clone git@github.com:chiznox6/ishop4u-backend.git
+cd ishop4u-backend</code></pre>
+    </li>
+    <li>Install dependencies:
+      <pre><code>pip install -r requirements.txt</code></pre>
+    </li>
+    <li>Run migrations:
+      <pre><code>flask db upgrade</code></pre>
+    </li>
+    <li>Verify tables:
+      <pre><code>sqlite3 ishop4u.db ".tables"</code></pre>
+    </li>
+  </ol>
 
+  <h2>GitHub Pages</h2>
+  <p>
+    This repository is published on GitHub Pages as documentation:<br>
+    <a href="https://chiznox6.github.io/ishop4u-backend/">https://chiznox6.github.io/ishop4u-backend/</a>
+  </p>
 
----
-
-## Running Locally
-
-1. Clone the repository:
-
-git clone git@github.com:chiznox6/ishop4u-backend.git
-cd ishop4u-backend
-
-
-2. Install dependencies:
-
-pip install -r requirements.txt
-
-
-3. Run migrations:
-
-flask db upgrade
-
-
-4. Verify tables:
-
-sqlite3 ishop4u.db ".tables"
-
-
-
-## GitHub Pages
-
-This repository is published on GitHub Pages as documentation:  
-
-
-## Notes
-
-This schema is designed for a Flask + React full-stack project.
-
-iShop4U does not handle payments directly; checkout redirects to affiliate links.
-
-The schema supports CRUD for CartItem and read/create for Product.
+  <h2>Notes</h2>
+  <ul>
+    <li>This schema is designed for a Flask + React full-stack project.</li>
+    <li>iShop4U does not handle payments directly; checkout redirects to affiliate links.</li>
+    <li>The schema supports CRUD for <code>CartItem</code> and read/create for <code>Product</code>.</li>
+  </ul>
+</body>
+</html>
