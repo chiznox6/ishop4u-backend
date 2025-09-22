@@ -5,6 +5,9 @@ It provides a unified shopping cart across multiple affiliate platforms (Amazon,
 
 ---
 
+## Schema Pages Link
+https://chiznox6.github.io/ishop4u-backend/
+
 ## Schema Overview
 
 ### Tables
